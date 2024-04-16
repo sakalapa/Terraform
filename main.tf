@@ -54,28 +54,28 @@ module "alb" {
   subnets = module.blog_vpc.public_subnets
   security_groups = [module.blog_sg.security_group_id]
 
-  target_groups = {
-    ex-instance = {
+  target_groups = [
+    {
       name_prefix      = "blog-"
       protocol         = "HTTP"
       port             = 80
       target_type      = "instance"
       targets = {
-        my_targer = {
+        my_target = {
           port = 80
-          target_id  = aws_instance.blog.id
+          target_id    = aws_instance.blog.id
         }
       }
     }
-  }
+  ]
 
-  listeners = {
-    http_tcp_listener = {
-      port     = 80
-      protocol = "HTTP"
+  http_tcp_listener = [
+    {
+      port               = 80
+      protocol           = "HTTP"
       target_group_index = 0
     }
-  }
+  ]
 
   tags = {
     Environment = "dev"
@@ -92,6 +92,6 @@ module "blog_sg" {
   ingress_rules       = ["http-80-tcp", "https-443-tcp"]
   ingress_cidr_blocks = ["0.0.0.0/0"]
 
-  egress_rules       = ["all-all"]
-  egress_cidr_blocks = ["0.0.0.0/0"]
+  egress_rules        = ["all-all"]
+  egress_cidr_blocks  = ["0.0.0.0/0"]
 }
