@@ -1,3 +1,3 @@
 output "public_dns" {
-  value = aws_instance.blog.public_dns
+  value = module.autoscaling.autoscaling_group_enabled_metrics
 }
