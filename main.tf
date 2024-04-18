@@ -82,6 +82,7 @@ module "blog_alb" {
   tags = {
     Environment = "dev"
   }
+}
 
 module "blog_sg" {
   name                = "blog_new"
