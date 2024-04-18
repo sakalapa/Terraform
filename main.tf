@@ -46,7 +46,6 @@ resource "aws_instance" "blog" {
   }
 }
 
-#####################
 module "blog_alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 6.0"
@@ -79,11 +78,6 @@ module "blog_alb" {
   tags = {
     Environment = "dev"
   }
-}
-#######################
-
-
-
 
 module "blog_sg" {
   name                = "blog_new"
