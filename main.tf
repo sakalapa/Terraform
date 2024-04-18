@@ -40,7 +40,6 @@ module "autoscaling" {
   name = "blog"
   min_size = 1
   max_size = 2
-  preferred_size = 1
   
   image_id           = data.aws_ami.app_ami.id
   instance_type = var.instance_type
