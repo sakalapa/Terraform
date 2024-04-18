@@ -2,3 +2,36 @@ variable "instance_type" {
   description = "Type of EC2 instance to provision"
   default     = "t3.nano"
 }
+
+variable "ami_filter" {
+  description = "Name filter and owner for AMI"
+  type = object({
+    name   = string
+    owner  = string
+  })
+  default =  {
+    name   = "bitnami-tomcat-*-x86_64-hvm-ebs-nami"
+    owners = ["979382823631"] # Bitnami
+  }
+}
+
+variable "environment" {
+  description = "dev environment"
+  type = object ({
+    name = string
+    network_prefix = string
+  })
+  default = {
+    name = "dev"
+    network_prefix = "10.0"
+  }
+}
+
+variable "asg_min_size" {
+  description = "min_size for asg"
+  default = 1
+}
+variable "asg_max_size" {
+  description = "max_size for asg"
+  default = 2
+}
