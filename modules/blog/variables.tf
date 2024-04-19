@@ -14,6 +14,7 @@ variable "ami_filter" {
   default = {
     name  = "bitnami-tomcat-*-x86_64-hvm-ebs-nami"
     owner = "979382823631" # Bitnami
+
   }
 }
 
@@ -30,7 +31,6 @@ variable "environment" {
   }
 }
 
-
 variable "asg_min" {
   description = "Minimum instance count for the ASG"
   default     = 1
@@ -40,3 +40,4 @@ variable "asg_max" {
   description = "Maximum instance count for the ASG"
   default     = 2
 }
+
