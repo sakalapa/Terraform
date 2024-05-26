@@ -117,9 +117,6 @@ module "blog_alb" {
       }
       }
 
-  tags = [
-    Environment = "Dev"
-  ]
 }
 
 module "blog_sg" {
