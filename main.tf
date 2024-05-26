@@ -114,7 +114,6 @@ module "alb" {
 
   tags = {
     Environment = "Dev"
-    Project     = "Example"
   }
 }
 
