@@ -18,11 +18,10 @@ data "aws_vpc" "default" {
   default = true
 }
 resource "aws_instance" "blog" {
-  ami           = data.aws_ami.app_ami.id
-  instance_type = var.instance_type
-
-
-vpc_security_group_id = [aws_security_group.blog.id]
+  ami                   = data.aws_ami.app_ami.id
+  instance_type         = var.instance_type
+  
+  vpc_security_group_id = [aws_security_group.blog.id]
 
 
   tags = {
