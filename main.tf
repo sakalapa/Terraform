@@ -47,7 +47,7 @@ resource "aws_security_group" "blog_http_in" {
 }
 
 resource "aws_security_group" "blog_everthing_in" {
-  type = "ingress"
+  type        = "ingress"
   from_port   = 443
   to_port     = 443
   protocol    = "tcp"
@@ -58,7 +58,7 @@ resource "aws_security_group" "blog_everthing_in" {
 }
 
 resource "aws_security_group" "blog_everthing_out" {
-  type = "egress"
+  type        = "egress"
   from_port   = 0
   to_port     = 0
   protocol    = "-1"
