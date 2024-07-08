@@ -14,18 +14,13 @@ data "aws_ami" "app_ami" {
   owners = ["979382823631"] # Bitnami
 }
 
-data "aws_vpc" "default" {
-  default = true
-}
-
-
 module "blog_vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
   name = "dev"
   cidr = "10.0.0.0/16"
 
-  azs             = ["ap-southeast-2a", "ap-southeast-2b", "ap-southeast-2c"]
+  azs             = ["ap-southeast-2a","ap-southeast-2b","ap-southeast-2c"]
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
   tags = {
@@ -34,46 +29,49 @@ module "blog_vpc" {
   }
 }
 
-resource "aws_instance" "blog" {
-  ami                    = data.aws_ami.app_ami.id
-  instance_type          = var.instance_type
-  vpc_security_group_ids = [module.blog_sg.security_group_id]
 
-  subnet_id = module.blog_vpc.public_subnets[0]
+module "blog_autoscaling" {
+  source  = "terraform-aws-modules/autoscaling/aws"
+  version = "6.5.2"
 
-  tags = {
-    Name = "Learning Terraform"
-  }
+  name = "blog"
+
+  min_size            = 1
+  max_size            = 2
+  vpc_zone_identifier = module.blog_vpc.public_subnets
+  target_group_arns   = module.blog_alb.target_group_arns
+  security_groups     = [module.blog_sg.security_group_id]
+  instance_type       = var.instance_type
+  image_id            = data.aws_ami.app_ami.id
 }
 
-module "alb" {
-  source = "terraform-aws-modules/alb/aws"
+module "blog_alb" {
+  source  = "terraform-aws-modules/alb/aws"
+  version = "~> 6.0"
 
-  name              = "blog-alb"
+  name = "blog-alb"
+
   load_balancer_type = "application"
-  vpc_id            = module.blog_vpc.vpc_id
-  subnets           = module.blog_vpc.public_subnets
-  security_groups   = [module.blog.sg.security_group_id]
 
-  target_groups = {
+  vpc_id             = module.blog_vpc.vpc_id
+  subnets            = module.blog_vpc.public_subnets
+  security_groups    = [module.blog_sg.security_group_id]
+
+  target_groups = [
+    {
       name_prefix      = "blog-"
-      protocol         = "HTTP"
-      port             = 80
+      backend_protocol = "HTTP"
+      backend_port     = 80
       target_type      = "instance"
-      targets = {
-        my_target = {
-          target_id = "aws_instance.blog.id"
-          port = 80
-        } 
-      }
-  }
-  
-  listeners = [
-      {
-      port     = 80
-      protocol = "HTTP"
-      target_group_index = 0 
-      }
+    }
+  ]
+
+  http_tcp_listeners = [
+    {
+      port               = 80
+      protocol           = "HTTP"
+      target_group_index = 0
+    }
   ]
 
   tags = {
